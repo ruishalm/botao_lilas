@@ -1,0 +1,185 @@
+.calendarWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.statusCard {
+  background: linear-gradient(135deg, #f0abfc, #d946ef);
+  border-radius: 16px;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(217, 70, 239, 0.2);
+}
+
+.statusTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.statusSub {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: 15px;
+}
+
+.logButton {
+  background-color: white;
+  color: #d946ef;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.calendarContainer {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+}
+
+/* Resto dos estilos se mantêm... */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.monthTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #a21caf;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #888;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.emptyDay {
+  padding: 10px;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legendColor {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: white;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modalTitle {
+  margin: 0;
+  color: #a21caf;
+  font-size: 1.1rem;
+}
+
+.modalTextarea {
+  width: 100%;
+  height: 100px;
+  border-radius: 8px;
+  border: 1px solid #fbcfe8;
+  padding: 10px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+}
+
+.modalTextarea:focus {
+  border-color: #d946ef;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancelBtn, .saveBtn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background-color: #f3f4f6;
+  color: #666;
+}
+
+.saveBtn {
+  background-color: #d946ef;
+  color: white;
+}

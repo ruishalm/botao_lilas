@@ -1,0 +1,78 @@
+.dayBox {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.2s;
+  position: relative;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  margin: 0 auto;
+}
+
+.dayBox:active {
+  transform: scale(0.95);
+}
+
+.today {
+  font-weight: bold;
+  border: 2px solid #d946ef;
+}
+
+.periodDay {
+  background-color: #ffe4e6; /* Rosa claro para menstruação */
+  color: #e11d48;
+}
+
+.tpmDay {
+  border: 2px dashed #f472b6; /* Rosa pontilhado para TPM */
+  color: #be123c;
+}
+
+.predictedDay {
+  border: 2px dotted #fca5a5;
+  color: #fda4af;
+}
+
+.cycleDot {
+  width: 4px;
+  height: 4px;
+  background-color: #d946ef;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+}
+
+.noteDot {
+  width: 5px;
+  height: 5px;
+  background-color: #fbbf24; /* Um amarelo sutil para a nota */
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+
+.tpmText {
+  font-size: 0.5rem;
+  font-weight: bold;
+  color: #f472b6;
+  position: absolute;
+  bottom: 2px;
+}
+
+.bloodDrop {
+  color: #e11d48;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
