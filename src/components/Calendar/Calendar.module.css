@@ -108,9 +108,9 @@
 }
 
 .legendColor {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
 }
 
 .modalOverlay {
@@ -143,6 +143,29 @@
   margin: 0;
   color: #a21caf;
   font-size: 1.1rem;
+}
+
+.desceuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.desceuButton:hover {
+  background-color: #fca5a5;
+}
+
+.desceuButton:active {
+  transform: scale(0.98);
 }
 
 .modalTextarea {
@@ -182,4 +205,45 @@
 .saveBtn {
   background-color: #d946ef;
   color: white;
+}
+
+.secretOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+}
+
+.hugeSecretButton {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #a855f7 0%, #7e22ce 100%);
+  color: white;
+  font-size: 2rem;
+  font-weight: 900;
+  border: 10px solid #d8b4fe;
+  box-shadow: 0 0 50px rgba(168, 85, 247, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hugeSecretButton:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5);
 }

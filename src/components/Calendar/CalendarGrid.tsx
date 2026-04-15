@@ -41,11 +41,11 @@ const CalendarGrid = ({ currentDate, onSecretPress, onDayClick, lastPeriodStart,
     // Calcular se é previsão (futuro)
     const diffTimeNext = date.getTime() - nextPeriodStart.getTime();
     const diffDaysNext = Math.ceil(diffTimeNext / (1000 * 60 * 60 * 24));
-    const isPredictedDay = diffDaysNext >= 0 && diffDaysNext < periodDuration;
-    
-    // Calcular TPM (7 dias antes da próxima menstruação)
-    const isTpmDay = diffDaysNext >= -7 && diffDaysNext < 0;
+    const isPredictedDay = diffDaysNext === 0; // Apenas 1 dia de previsão inicial
 
+    // Os 5 dias antes é TPM
+    const isTpmDay = diffDaysNext >= -5 && diffDaysNext < 0;
+    
     const hasNote = !!notes[dateString];
 
     days.push(
@@ -55,8 +55,8 @@ const CalendarGrid = ({ currentDate, onSecretPress, onDayClick, lastPeriodStart,
         date={date}
         isToday={isToday}
         isPeriodDay={isPeriodDay}
-        isTpmDay={isTpmDay}
         isPredictedDay={isPredictedDay}
+        isTpmDay={isTpmDay}
         hasNote={hasNote}
         onSecretPress={onSecretPress} 
         onDayClick={onDayClick}

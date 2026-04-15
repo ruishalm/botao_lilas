@@ -1,4 +1,4 @@
-import { useRef, MouseEvent, TouchEvent } from 'react';
+import { useRef } from 'react';
 import { Droplet } from 'lucide-react';
 import styles from './CalendarDay.module.css';
 
@@ -7,14 +7,14 @@ interface CalendarDayProps {
   date: Date;
   isToday: boolean;
   isPeriodDay: boolean;
-  isTpmDay: boolean;
   isPredictedDay: boolean;
+  isTpmDay: boolean;
   hasNote: boolean;
   onSecretPress: () => void;
   onDayClick: (date: Date) => void;
 }
 
-const CalendarDay = ({ day, date, isToday, isPeriodDay, isTpmDay, isPredictedDay, hasNote, onSecretPress, onDayClick }: CalendarDayProps) => {
+const CalendarDay = ({ day, date, isToday, isPeriodDay, isPredictedDay, isTpmDay, hasNote, onSecretPress, onDayClick }: CalendarDayProps) => {
   const pressTimer = useRef<number | null>(null);
   const isLongPress = useRef(false);
 
@@ -25,7 +25,7 @@ const CalendarDay = ({ day, date, isToday, isPeriodDay, isTpmDay, isPredictedDay
       if (isToday) { 
         onSecretPress();
       }
-    }, 3000); 
+    }, 5000); 
   };
 
   const endPress = () => {
@@ -43,8 +43,8 @@ const CalendarDay = ({ day, date, isToday, isPeriodDay, isTpmDay, isPredictedDay
 
   let dayClass = styles.dayBox;
   if (isPeriodDay) dayClass += ` ${styles.periodDay}`;
-  else if (isTpmDay) dayClass += ` ${styles.tpmDay}`;
   else if (isPredictedDay) dayClass += ` ${styles.predictedDay}`;
+  else if (isTpmDay) dayClass += ` ${styles.tpmDay}`;
   
   if (isToday) dayClass += ` ${styles.today}`;
 
@@ -60,6 +60,7 @@ const CalendarDay = ({ day, date, isToday, isPeriodDay, isTpmDay, isPredictedDay
     >
       {day}
       {isPeriodDay && <Droplet size={12} className={styles.bloodDrop} fill="currentColor" />}
+      {isPredictedDay && <Droplet size={12} className={styles.grayDrop} fill="currentColor" />}
       {isTpmDay && <span className={styles.tpmText}>TPM</span>}
       {isToday && <span className={styles.cycleDot} />}
       {hasNote && !isToday && <span className={styles.noteDot} />}
