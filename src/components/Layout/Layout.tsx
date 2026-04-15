@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Calendar as CalendarIcon, HeartPulse, BookUser } from 'lucide-react';
 import styles from './Layout.module.css';
 

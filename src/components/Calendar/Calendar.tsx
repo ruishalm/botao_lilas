@@ -41,8 +41,27 @@ const Calendar = () => {
       if (navigator.vibrate) {
         navigator.vibrate([300, 100, 300, 100, 300]);
       }
-      alert("Ajuda está a caminho!");
-      setShowSecretButton(false);
+
+      const sendTelegramAlert = (lat?: number, lng?: number) => {
+        const locationText = lat && lng 
+          ? `https://maps.google.com/?q=${lat},${lng}` 
+          : "(Localização não disponível)";
+        
+        console.log(`[SIMULAÇÃO TELEGRAM] Enviando mensagem para o grupo de resposta:`);
+        console.log(`"🚨 ALERTA LILÁS ACIONADO! 🚨\nPreciso de ajuda urgente!\nLocalização: ${locationText}"`);
+        
+        alert("Ajuda está a caminho!");
+        setShowSecretButton(false);
+      };
+
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => sendTelegramAlert(position.coords.latitude, position.coords.longitude),
+          () => sendTelegramAlert()
+        );
+      } else {
+        sendTelegramAlert();
+      }
     }, 5000);
   };
 
