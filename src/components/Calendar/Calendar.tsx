@@ -139,8 +139,28 @@ const Calendar = () => {
           }
         }
 
-        console.log(`[SIMULAÇÃO TELEGRAM] Enviando mensagem para o grupo de resposta:`);
-        console.log(`"🚨 ALERTA LILÁS ACIONADO! 🚨\nPreciso de ajuda urgente!\nLocalização: ${locationText}${profileText}"`);
+        const message = `🚨 ALERTA LILÁS ACIONADO! 🚨\nPreciso de ajuda urgente!\nLocalização: ${locationText}${profileText}`;
+        const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+        const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+
+        if (botToken && chatId) {
+          fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: message })
+          }).then(response => {
+            if (response.ok) {
+               console.log("Alerta enviado com sucesso via Telegram.");
+            } else {
+               console.error("Erro ao enviar alerta via Telegram.", response);
+            }
+          }).catch(error => {
+            console.error("Erro na requisição para o Telegram.", error);
+          });
+        } else {
+          console.warn("Tokens do Telegram não configurados. Simulação local:");
+          console.log(message);
+        }
 
         alert("Ajuda está a caminho!");
         setShowSecretButton(false);
