@@ -1,0 +1,24 @@
+.notesContainer {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.listContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.emptyText {
+  padding: 24px 16px;
+  text-align: center;
+  color: #6b7280;
+}

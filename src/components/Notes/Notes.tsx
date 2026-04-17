@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
+import { NoteItem } from './NoteItem';
+import styles from './Notes.module.css';
 
 const Notes = () => {
-  const [notes, setNotes] = useState<Record<string, string>>(() => {
-    const savedNotes = localStorage.getItem('calendarNotes');
-    return savedNotes ? JSON.parse(savedNotes) : {};
-  });
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user: User | null) => {
@@ -17,45 +17,44 @@ const Notes = () => {
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
             const dbData = querySnapshot.docs[0].data();
-            if (dbData.notes) setNotes(dbData.notes);
+            // As notas podem estar em `dbData.notes` ou `dbData.profile.notes`
+            if (dbData.profile?.notes) {
+              setNotes(dbData.profile.notes);
+            } else if (dbData.notes) {
+              setNotes(dbData.notes);
+            }
           }
         } catch (error) {
           console.error("Erro ao carregar anotações:", error);
+        } finally {
+          setLoading(false);
         }
+      } else {
+        const savedNotes = localStorage.getItem('calendarNotes');
+        setNotes(savedNotes ? JSON.parse(savedNotes) : {});
+        setLoading(false);
       }
     });
+
     return () => unsubscribe();
   }, []);
 
   const sortedNotes = Object.entries(notes)
-    .filter(([_, text]) => text.trim() !== '')
-    .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime());
+    .map(([date, text]) => ({ id: date, date, text }))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <div style={{ padding: '20px', backgroundColor: 'white', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-      <h2 style={{ color: '#a21caf', marginTop: 0, marginBottom: '20px' }}>Minhas Anotações</h2>
-      
-      {sortedNotes.length === 0 ? (
-        <div style={{ padding: '15px', backgroundColor: '#fdf4ff', borderRadius: '8px', color: '#666', textAlign: 'center' }}>
-          Você ainda não tem anotações no calendário.
-        </div>
+    <div className={styles.notesContainer}>
+      <h2 className={styles.title}>Minhas Anotações</h2>
+      {loading ? (
+        <p>Carregando anotações...</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          {sortedNotes.map(([date, text]) => {
-            const dateObj = new Date(date + 'T12:00:00'); // Evita problemas de fuso horário
-            const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-            
-            return (
-              <div key={date} style={{ padding: '15px', border: '1px solid #fbcfe8', borderRadius: '8px', backgroundColor: '#fdf4ff' }}>
-                <div style={{ fontWeight: 'bold', color: '#db2777', marginBottom: '8px', fontSize: '0.9rem' }}>
-                  {formattedDate}
-                </div>
-                <div style={{ color: '#4b5563', whiteSpace: 'pre-wrap', lineHeight: '1.4' }}>
-                  {text}
-                </div>
-              </div>
-            );
-          })}
+        <div className={styles.listContainer}>
+          {sortedNotes.length > 0 ? (
+            sortedNotes.map(note => <NoteItem key={note.id} date={note.date} note={note.text} />)
+          ) : (
+            <p className={styles.emptyText}>Nenhuma anotação encontrada.</p>
+          )}
         </div>
       )}
     </div>

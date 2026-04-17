@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { Calendar as CalendarIcon, HeartPulse, BookUser, User, HelpCircle, StickyNote } from 'lucide-react';
+import logoMobile from '../../assets/logo_mobile.png';
+import Footer from '../Footer';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
@@ -13,7 +15,7 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
   return (
     <div className={styles.appContainer}>
       <header className={styles.header}>
-        <h1 className={styles.headerTitle}>Saúde da Mulher</h1>
+        <img src={logoMobile} alt="Logo Saúde da Mulher" style={{ height: '36px', marginRight: 'auto' }} />
         <button className={styles.helpButton} onClick={onOpenTutorial} title="Como usar">
           <HelpCircle size={20} />
         </button>
@@ -21,6 +23,7 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
 
       <main className={styles.mainContent}>
         {children}
+        <Footer />
       </main>
 
       <nav className={styles.bottomNav}>
@@ -61,6 +64,7 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
         </button>
       </nav>
     </div>
+    
   );
 };
 
