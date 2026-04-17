@@ -36,7 +36,7 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
           onClick={() => setActiveTab('health')}
         >
           <HeartPulse size={24} />
-          <span>Saúde</span>
+          <span>Minha Saúde</span>
         </button>
         <button 
           className={`${styles.navItem} ${activeTab === 'contacts' ? styles.active : ''}`}

@@ -100,6 +100,57 @@
   background-color: #fbcfe8;
 }
 
+.actionsHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.editBtn, .saveBtn, .cancelBtn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.editBtn {
+  background-color: #a21caf;
+  color: white;
+}
+
+.saveBtn {
+  background-color: #10b981;
+  color: white;
+}
+
+.cancelBtn {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.editBtn:hover, .saveBtn:hover, .cancelBtn:hover {
+  opacity: 0.9;
+}
+
+.readOnlyValue {
+  padding: 10px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  color: #111827;
+  min-height: 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 600px) {
   .rowGroup {
     flex-direction: column;

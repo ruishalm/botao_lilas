@@ -3,6 +3,8 @@ import CalendarHeader from './CalendarHeader';
 import CalendarGrid from './CalendarGrid';
 import styles from './Calendar.module.css';
 import { Droplet, DropletOff } from 'lucide-react';
+import { auth, db } from '../../firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -34,11 +36,38 @@ const Calendar = () => {
 
   useEffect(() => {
     localStorage.setItem('calendarNotes', JSON.stringify(notes));
+    if (auth.currentUser) {
+      setDoc(doc(db, 'users', auth.currentUser.uid), { notes }, { merge: true }).catch(console.error);
+    }
   }, [notes]);
 
   useEffect(() => {
     localStorage.setItem('calendarPeriods', JSON.stringify(periods));
+    if (auth.currentUser) {
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const recentPeriods = periods.filter(p => new Date(p.start) >= oneYearAgo);
+      setDoc(doc(db, 'users', auth.currentUser.uid), { periods: recentPeriods }, { merge: true }).catch(console.error);
+    }
   }, [periods]);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user: any) => {
+      if (user) {
+        try {
+          const docSnap = await getDoc(doc(db, 'users', user.uid));
+          if (docSnap.exists()) {
+            const dbData = docSnap.data();
+            if (dbData.periods) setPeriods(dbData.periods);
+            if (dbData.notes) setNotes(dbData.notes);
+          }
+        } catch (error) {
+          console.error("Erro ao carregar calendário:", error);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
   
   // Calcular ciclo length
   let userCycleLength = 28;
