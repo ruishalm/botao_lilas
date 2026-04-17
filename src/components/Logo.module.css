@@ -1,0 +1,96 @@
+/* --- Base Logo Styles --- */
+.svgLogoLink {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.rafaMunhozLogo {
+    height: auto;
+    overflow: visible;
+}
+
+.logoUnderline {
+    stroke: #B91C1C; /* Vermelho Sangue */
+    stroke-width: 2.5;
+    fill: none;
+    stroke-dasharray: 195;
+    stroke-dashoffset: 195;
+    transition: stroke-dashoffset 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.logoFlair {
+    fill: none;
+    stroke: #B91C1C; /* Vermelho Sangue */
+    stroke-width: 1;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logoBgCapsule {
+    transition: fill 0.4s ease;
+}
+
+/* --- Hover Effects --- */
+.svgLogoLink:hover .logoUnderline {
+    stroke-dashoffset: 0;
+}
+
+.svgLogoLink:hover .logoFirstName {
+    fill: #B91C1C; /* Vermelho Sangue */
+}
+
+.svgLogoLink:hover .logoFlair {
+    transform: translate(195px, 25px) rotate(180deg);
+}
+
+/* --- Variants --- */
+
+/* Default variant (for light backgrounds) */
+.default .logoFirstName {
+    font-weight: 700;
+    fill: var(--cor-texto-escuro);
+    transition: fill 0.4s ease;
+}
+
+.default .logoLastName {
+    font-weight: 400;
+    fill: var(--cor-texto-escuro);
+}
+
+.default .logoBgCapsule {
+    fill: rgba(0, 0, 0, 0.02); /* Fundo sempre visível */
+}
+
+.svgLogoLink:hover .default .logoBgCapsule {
+    fill: rgba(0, 0, 0, 0.05); /* Destaque no hover */
+}
+
+/* Inverse variant (for dark backgrounds) */
+.inverse .logoFirstName,
+.inverse .logoLastName {
+    fill: var(--cor-texto-claro);
+}
+
+.inverse .logoBgCapsule {
+    fill: rgba(255, 255, 255, 0.04); /* Fundo sempre visível */
+}
+
+.svgLogoLink:hover .inverse .logoBgCapsule {
+    fill: rgba(255, 255, 255, 0.1); /* Destaque no hover */
+}
+
+/* --- Sizes --- */
+.normal {
+    width: 210px;
+}
+
+.small {
+    width: 140px;
+}
+
+.rafaMunhozLogo text,
+.rafaMunhozLogo tspan {
+    font-family: 'Roboto', sans-serif;
+}
+
+.normal text { font-size: 28px; }
+.small text { font-size: 24px; }

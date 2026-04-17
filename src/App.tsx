@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Layout from './components/Layout/Layout';
 import Calendar from './components/Calendar/Calendar';
 import Profile from './components/Profile/Profile';
@@ -9,18 +9,27 @@ import Notes from './components/Notes/Notes';
 
 function App() {
   const [activeTab, setActiveTab] = useState('calendar');
-  const [showTutorial, setShowTutorial] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    return localStorage.getItem('hasSeenTutorial') !== 'true';
+  });
 
-  useEffect(() => {
-    const hasSeen = localStorage.getItem('hasSeenTutorial');
-    if (!hasSeen) {
-      setShowTutorial(true);
+  const requestLocationPermission = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log("Localização permitida:", position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.error("Usuário negou ou ocorreu erro:", error.message);
+        }
+      );
     }
-  }, []);
+  };
 
   const closeTutorial = () => {
     localStorage.setItem('hasSeenTutorial', 'true');
     setShowTutorial(false);
+    requestLocationPermission();
   };
 
   return (
