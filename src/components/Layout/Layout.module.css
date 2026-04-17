@@ -17,6 +17,10 @@
   text-align: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .headerTitle {
@@ -24,6 +28,25 @@
   font-size: 1.2rem;
   color: #a21caf; /* Rosa/Lilás forte */
   font-weight: 600;
+}
+
+.helpButton {
+  position: absolute;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #a21caf;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.helpButton:hover {
+  background-color: #fdf4ff;
 }
 
 .mainContent {

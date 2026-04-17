@@ -1,0 +1,140 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background-color: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.iconContainer {
+  background-color: #fdf4ff;
+  padding: 16px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alertIcon {
+  background-color: #fef2f2;
+}
+
+.content h2 {
+  color: #1f2937;
+  margin: 0 0 16px 0;
+  font-size: 1.5rem;
+}
+
+.content p {
+  color: #4b5563;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.instructionBox {
+  background-color: #f3f4f6;
+  border-left: 4px solid #a21caf;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.instructionBox ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #374151;
+}
+
+.instructionBox li {
+  margin-bottom: 8px;
+}
+
+.instructionBox li:last-child {
+  margin-bottom: 0;
+}
+
+.warningText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #dc2626 !important;
+  font-weight: 600;
+  font-size: 0.9rem !important;
+}
+
+.footer {
+  padding: 20px 24px;
+  background-color: #f9fafb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background-color: #a21caf;
+  width: 24px;
+  border-radius: 4px;
+}
+
+.nextButton {
+  background-color: #a21caf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.nextButton:hover {
+  background-color: #86198f;
+}

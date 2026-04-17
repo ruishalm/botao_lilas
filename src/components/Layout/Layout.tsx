@@ -1,18 +1,22 @@
 import type { ReactNode } from 'react';
-import { Calendar as CalendarIcon, HeartPulse, BookUser } from 'lucide-react';
+import { Calendar as CalendarIcon, HeartPulse, BookUser, User, HelpCircle } from 'lucide-react';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
   children: ReactNode;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onOpenTutorial: () => void;
 }
 
-const Layout = ({ children, activeTab, setActiveTab }: LayoutProps) => {
+const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutProps) => {
   return (
     <div className={styles.appContainer}>
       <header className={styles.header}>
         <h1 className={styles.headerTitle}>Saúde da Mulher</h1>
+        <button className={styles.helpButton} onClick={onOpenTutorial} title="Como usar">
+          <HelpCircle size={20} />
+        </button>
       </header>
 
       <main className={styles.mainContent}>
@@ -32,7 +36,7 @@ const Layout = ({ children, activeTab, setActiveTab }: LayoutProps) => {
           onClick={() => setActiveTab('health')}
         >
           <HeartPulse size={24} />
-          <span>Sua Saúde</span>
+          <span>Saúde</span>
         </button>
         <button 
           className={`${styles.navItem} ${activeTab === 'contacts' ? styles.active : ''}`}
@@ -40,6 +44,13 @@ const Layout = ({ children, activeTab, setActiveTab }: LayoutProps) => {
         >
           <BookUser size={24} />
           <span>Contatos</span>
+        </button>
+        <button 
+          className={`${styles.navItem} ${activeTab === 'profile' ? styles.active : ''}`}
+          onClick={() => setActiveTab('profile')}
+        >
+          <User size={24} />
+          <span>Perfil</span>
         </button>
       </nav>
     </div>

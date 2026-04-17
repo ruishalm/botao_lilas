@@ -1,26 +1,35 @@
 import CalendarDay from './CalendarDay';
 import styles from './Calendar.module.css';
 
+interface Period {
+  start: string;
+  end: string | null;
+}
+
 interface CalendarGridProps {
   currentDate: Date;
   onSecretPress: () => void;
   onDayClick: (date: Date) => void;
-  lastPeriodStart: Date;
+  periods: Period[];
   cycleLength: number;
-  periodDuration: number;
   notes: Record<string, string>;
 }
 
-const CalendarGrid = ({ currentDate, onSecretPress, onDayClick, lastPeriodStart, cycleLength, periodDuration, notes }: CalendarGridProps) => {
+const CalendarGrid = ({ currentDate, onSecretPress, onDayClick, periods, cycleLength, notes }: CalendarGridProps) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = new Date(year, month, 1).getDay();
 
-  // Calcular o próximo ciclo
-  const nextPeriodStart = new Date(lastPeriodStart);
-  nextPeriodStart.setDate(lastPeriodStart.getDate() + cycleLength);
+  const sortedPeriods = [...periods].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+  const lastPeriod = sortedPeriods[sortedPeriods.length - 1];
+
+  let nextPeriodStart: Date | null = null;
+  if (lastPeriod) {
+    nextPeriodStart = new Date(lastPeriod.start + 'T00:00:00');
+    nextPeriodStart.setDate(nextPeriodStart.getDate() + cycleLength);
+  }
 
   const days = [];
   
@@ -28,23 +37,38 @@ const CalendarGrid = ({ currentDate, onSecretPress, onDayClick, lastPeriodStart,
     days.push(<div key={`empty-${i}`} className={styles.emptyDay} />);
   }
 
+  const todayStr = new Date().toDateString();
+
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
     const dateString = date.toISOString().split('T')[0];
-    const isToday = new Date().toDateString() === date.toDateString();
+    const isToday = todayStr === date.toDateString();
     
-    // Calcular se é um dia de menstruação (passado)
-    const diffTimePeriod = date.getTime() - lastPeriodStart.getTime();
-    const diffDaysPeriod = Math.ceil(diffTimePeriod / (1000 * 60 * 60 * 24));
-    const isPeriodDay = diffDaysPeriod >= 0 && diffDaysPeriod < periodDuration;
+    let isPeriodDay = false;
+    for (const p of periods) {
+      const pStart = new Date(p.start + 'T00:00:00');
+      let pEnd = p.end ? new Date(p.end + 'T00:00:00') : new Date(); // Se não tem fim, vai até hoje
+      
+      // Ajustar para não contar o futuro se for aberto
+      if (date >= pStart && date <= pEnd) {
+        isPeriodDay = true;
+        break;
+      }
+    }
 
-    // Calcular se é previsão (futuro)
-    const diffTimeNext = date.getTime() - nextPeriodStart.getTime();
-    const diffDaysNext = Math.ceil(diffTimeNext / (1000 * 60 * 60 * 24));
-    const isPredictedDay = diffDaysNext === 0; // Apenas 1 dia de previsão inicial
+    let isPredictedDay = false;
+    let isTpmDay = false;
 
-    // Os 5 dias antes é TPM
-    const isTpmDay = diffDaysNext >= -5 && diffDaysNext < 0;
+    if (nextPeriodStart) {
+      const diffTimeNext = date.getTime() - nextPeriodStart.getTime();
+      const diffDaysNext = Math.round(diffTimeNext / (1000 * 60 * 60 * 24));
+      
+      // Dia previsto
+      isPredictedDay = diffDaysNext === 0;
+      
+      // TPM: de 5 dias antes até o dia anterior
+      isTpmDay = diffDaysNext >= -5 && diffDaysNext < 0;
+    }
     
     const hasNote = !!notes[dateString];
 

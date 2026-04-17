@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import CalendarHeader from './CalendarHeader';
 import CalendarGrid from './CalendarGrid';
 import styles from './Calendar.module.css';
-import { Droplet } from 'lucide-react';
+import { Droplet, DropletOff } from 'lucide-react';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -11,23 +11,95 @@ const Calendar = () => {
   const [showSecretButton, setShowSecretButton] = useState(false);
   const secretTimer = useRef<number | null>(null);
   
-  // Notas salvas no localStorage do navegador da usuária (Cookies locais)
   const [notes, setNotes] = useState<Record<string, string>>(() => {
     const savedNotes = localStorage.getItem('calendarNotes');
     return savedNotes ? JSON.parse(savedNotes) : {};
   });
 
+  const [periods, setPeriods] = useState<{ start: string; end: string | null }[]>(() => {
+    const saved = localStorage.getItem('calendarPeriods');
+    if (saved) return JSON.parse(saved);
+    
+    // Fictício: A última menstruação foi há 18 dias atrás
+    const defaultStart = new Date();
+    defaultStart.setDate(defaultStart.getDate() - 18);
+    const defaultEnd = new Date(defaultStart);
+    defaultEnd.setDate(defaultEnd.getDate() + 4);
+    
+    return [{ 
+      start: defaultStart.toISOString().split('T')[0], 
+      end: defaultEnd.toISOString().split('T')[0] 
+    }];
+  });
+
   useEffect(() => {
     localStorage.setItem('calendarNotes', JSON.stringify(notes));
   }, [notes]);
+
+  useEffect(() => {
+    localStorage.setItem('calendarPeriods', JSON.stringify(periods));
+  }, [periods]);
   
-  // Fictício: A última menstruação foi há 18 dias atrás
-  const lastPeriodStart = new Date();
-  lastPeriodStart.setDate(new Date().getDate() - 18);
+  // Calcular ciclo length
+  let userCycleLength = 28;
+  const savedProfile = localStorage.getItem('userProfile');
+  if (savedProfile) {
+    try {
+      const profile = JSON.parse(savedProfile);
+      if (profile.cycleLength) userCycleLength = parseInt(profile.cycleLength, 10) || 28;
+    } catch (e) {}
+  }
+
+  let cycleLength = userCycleLength;
+  let hasPersonalizedPattern = false;
+
+  const sortedPeriods = [...periods].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
   
-  // Ciclo médio de 28 dias
-  const cycleLength = 28; 
-  const periodDuration = 5;
+  // Se temos pelo menos 4 períodos, podemos calcular 3 ciclos e fazer a média
+  if (sortedPeriods.length >= 4) {
+    const last4 = sortedPeriods.slice(-4);
+    let totalDays = 0;
+    for (let i = 0; i < 3; i++) {
+      const d1 = new Date(last4[i].start + 'T00:00:00').getTime();
+      const d2 = new Date(last4[i+1].start + 'T00:00:00').getTime();
+      totalDays += (d2 - d1) / (1000 * 60 * 60 * 24);
+    }
+    cycleLength = Math.round(totalDays / 3);
+    hasPersonalizedPattern = true;
+  }
+
+  let daysToNext = 0;
+  let currentCycleDay = 0;
+  let isPeriodOpen = false;
+  
+  if (sortedPeriods.length > 0) {
+    const lastP = sortedPeriods[sortedPeriods.length - 1];
+    isPeriodOpen = lastP.end === null;
+    
+    const startD = new Date(lastP.start + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    currentCycleDay = Math.floor((today.getTime() - startD.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    const nextP = new Date(startD);
+    nextP.setDate(nextP.getDate() + cycleLength);
+    daysToNext = Math.ceil((nextP.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  }
+
+  const handleToggleTodayPeriod = () => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    if (!isPeriodOpen) {
+      // Iniciar hoje
+      setPeriods([...sortedPeriods, { start: todayStr, end: null }]);
+    } else {
+      // Finalizar hoje
+      const updated = [...sortedPeriods];
+      updated[updated.length - 1].end = todayStr;
+      setPeriods(updated);
+    }
+  };
 
   const handleSecretPress = () => {
     if (navigator.vibrate) {
@@ -43,17 +115,36 @@ const Calendar = () => {
       }
 
       const sendTelegramAlert = (lat?: number, lng?: number) => {
-        const locationText = lat && lng 
-          ? `https://maps.google.com/?q=${lat},${lng}` 
+        const locationText = lat && lng
+          ? `https://maps.google.com/?q=${lat},${lng}`
           : "(Localização não disponível)";
-        
+
+        let profileText = `\n\nDados da Vítima:` +
+                          `\nNome: Não informado` +
+                          `\nIdade: Não informada` +
+                          `\nEndereço: Rua não informada, S/N - Bairro não informado, Cidade não informada/UF` +
+                          `\nContatos: Nenhum registrado`;
+
+        const savedProfile = localStorage.getItem('userProfile');
+        if (savedProfile) {
+          try {
+            const profile = JSON.parse(savedProfile);
+            profileText = `\n\nDados da Vítima:` +
+                          `\nNome: ${profile.name || 'Não informado'}` +
+                          `\nIdade: ${profile.age || 'Não informada'}` +
+                          `\nEndereço: ${profile.street || 'Rua não informada'}, ${profile.number || 'S/N'} - ${profile.neighborhood || 'Bairro não informado'}, ${profile.city || 'Cidade não informada'}/${profile.state || 'UF'}` +
+                          `\nContatos: ${profile.phones?.filter((p: any) => p.number).map((p: any) => `${p.number} (${p.observation || 'Sem obs'})`).join(', ') || 'Nenhum registrado'}`;
+          } catch (e) {
+            console.error("Erro ao ler perfil", e);
+          }
+        }
+
         console.log(`[SIMULAÇÃO TELEGRAM] Enviando mensagem para o grupo de resposta:`);
-        console.log(`"🚨 ALERTA LILÁS ACIONADO! 🚨\nPreciso de ajuda urgente!\nLocalização: ${locationText}"`);
-        
+        console.log(`"🚨 ALERTA LILÁS ACIONADO! 🚨\nPreciso de ajuda urgente!\nLocalização: ${locationText}${profileText}"`);
+
         alert("Ajuda está a caminho!");
         setShowSecretButton(false);
       };
-
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => sendTelegramAlert(position.coords.latitude, position.coords.longitude),
@@ -62,7 +153,7 @@ const Calendar = () => {
       } else {
         sendTelegramAlert();
       }
-    }, 5000);
+    }, 3000);
   };
 
   const endSecretAlert = () => {
@@ -94,16 +185,100 @@ const Calendar = () => {
     }
   };
 
+  const toggleSelectedDayPeriod = () => {
+    if (!selectedDate) return;
+    const dateStr = selectedDate.toISOString().split('T')[0];
+    const lastP = sortedPeriods[sortedPeriods.length - 1];
+    
+    if (isPeriodOpen) {
+      if (lastP && lastP.start === dateStr) {
+        // Se clicou no dia que iniciou, desfaz (remove o período)
+        const updated = sortedPeriods.slice(0, -1);
+        setPeriods(updated);
+      } else {
+        // Fechar na data selecionada
+        const updated = [...sortedPeriods];
+        updated[updated.length - 1].end = dateStr;
+        setPeriods(updated);
+      }
+    } else {
+      if (lastP && lastP.end === dateStr) {
+        // Se clicou no dia que fechou, reabre (desfaz o fechamento)
+        const updated = [...sortedPeriods];
+        updated[updated.length - 1].end = null;
+        setPeriods(updated);
+      } else if (lastP && lastP.start === dateStr && lastP.end === dateStr) {
+        // Se começou e terminou no mesmo dia, deleta
+        const updated = sortedPeriods.slice(0, -1);
+        setPeriods(updated);
+      } else {
+        // Iniciar na data escolhida
+        setPeriods([...sortedPeriods, { start: dateStr, end: null }]);
+      }
+    }
+    setSelectedDate(null); // fecha o modal
+  };
+
   const closeModal = () => {
     setSelectedDate(null);
   };
 
+  // Variáveis para o botão do modal
+  let modalButtonText = "DESCEU AQUI!";
+  let modalButtonBg = "#fee2e2";
+  let modalButtonColor = "#ef4444";
+  let modalButtonIcon = <Droplet size={18} fill="#ef4444" />;
+
+  if (selectedDate) {
+    const dateStr = selectedDate.toISOString().split('T')[0];
+    const lastP = sortedPeriods[sortedPeriods.length - 1];
+
+    if (isPeriodOpen) {
+      if (lastP && lastP.start === dateStr) {
+        modalButtonText = "DESFAZER INÍCIO";
+        modalButtonBg = "#fce7f3";
+        modalButtonColor = "#db2777";
+        modalButtonIcon = <DropletOff size={18} />;
+      } else {
+        modalButtonText = "MARCAR FIM AQUI";
+        modalButtonBg = "#fce7f3";
+        modalButtonColor = "#db2777";
+        modalButtonIcon = <DropletOff size={18} />;
+      }
+    } else {
+      if (lastP && lastP.end === dateStr) {
+        modalButtonText = "DESFAZER FIM";
+        modalButtonBg = "#fee2e2";
+        modalButtonColor = "#ef4444";
+        modalButtonIcon = <Droplet size={18} fill="#ef4444" />;
+      } else if (lastP && lastP.start === dateStr && lastP.end === dateStr) {
+        modalButtonText = "DESFAZER MARCAÇÃO";
+        modalButtonBg = "#fee2e2";
+        modalButtonColor = "#ef4444";
+        modalButtonIcon = <Droplet size={18} fill="#ef4444" />;
+      } else {
+        modalButtonText = "DESCEU AQUI!";
+        modalButtonBg = "#fee2e2";
+        modalButtonColor = "#ef4444";
+        modalButtonIcon = <Droplet size={18} fill="#ef4444" />;
+      }
+    }
+  }
+
   return (
     <div className={styles.calendarWrapper}>
       <div className={styles.statusCard}>
-        <div className={styles.statusTitle}>Dia 18 do Ciclo</div>
-        <div className={styles.statusSub}>Faltam 10 dias para a próxima menstruação</div>
-        <button className={styles.logButton}>Registrar Início hoje</button>
+        <div className={styles.statusTitle}>Dia {currentCycleDay} do Ciclo</div>
+        <div className={styles.statusSub}>
+          {daysToNext > 0 ? `Faltam ${daysToNext} dias para a próxima menstruação` : daysToNext < 0 ? `Atrasado há ${Math.abs(daysToNext)} dias` : 'A menstruação deve descer hoje'}
+        </div>
+        <button 
+          className={styles.logButton}
+          onClick={handleToggleTodayPeriod}
+          style={{ backgroundColor: isPeriodOpen ? '#f43f5e' : 'white', color: isPeriodOpen ? 'white' : '#db2777' }}
+        >
+          {isPeriodOpen ? 'Registrar Fim Hoje' : 'Registrar Início hoje'}
+        </button>
       </div>
 
       <div className={styles.calendarContainer}>
@@ -115,16 +290,18 @@ const Calendar = () => {
           currentDate={currentDate} 
           onSecretPress={handleSecretPress}
           onDayClick={handleDayClick}
-          lastPeriodStart={lastPeriodStart}
+          periods={sortedPeriods}
           cycleLength={cycleLength}
-          periodDuration={periodDuration}
           notes={notes}
         />
       </div>
       
       <div className={styles.legend}>
         <div className={styles.legendItem}>
-          <span style={{ fontWeight: 'bold', color: '#db2777' }}>Último ciclo: 28 dias [intervalo de 28 dias]</span>
+          <span style={{ fontWeight: 'bold', color: '#db2777' }}>
+            Último ciclo calculado: {cycleLength} dias 
+            {hasPersonalizedPattern ? ' (Seu padrão)' : ' (Padrão inicial)'}
+          </span>
         </div>
       </div>
 
@@ -135,9 +312,13 @@ const Calendar = () => {
               Anotações - {selectedDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
             </h3>
             
-            <button className={styles.desceuButton} onClick={() => console.log('Desceu!')}>
-              <Droplet size={18} color="#ef4444" fill="#ef4444" />
-              <span>DESCEU!</span>
+            <button 
+              className={styles.desceuButton} 
+              onClick={toggleSelectedDayPeriod}
+              style={{ backgroundColor: modalButtonBg, color: modalButtonColor }}
+            >
+              {modalButtonIcon}
+              <span>{modalButtonText}</span>
             </button>
 
             <textarea

@@ -22,10 +22,8 @@ const CalendarDay = ({ day, date, isToday, isPeriodDay, isPredictedDay, isTpmDay
     isLongPress.current = false;
     pressTimer.current = window.setTimeout(() => {
       isLongPress.current = true;
-      if (isToday) { 
-        onSecretPress();
-      }
-    }, 5000); 
+      onSecretPress();
+    }, 3000); 
   };
 
   const endPress = () => {
