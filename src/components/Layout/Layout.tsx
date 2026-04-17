@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Calendar as CalendarIcon, HeartPulse, BookUser, User, HelpCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, HeartPulse, BookUser, User, HelpCircle, StickyNote } from 'lucide-react';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
@@ -36,7 +36,21 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
           onClick={() => setActiveTab('health')}
         >
           <HeartPulse size={24} />
-          <span>Minha Saúde</span>
+          <span>Saúde</span>
+        </button>
+        <button 
+          className={`${styles.navItem} ${activeTab === 'profile' ? styles.active : ''}`}
+          onClick={() => setActiveTab('profile')}
+        >
+          <User size={30} />
+          <span>Perfil</span>
+        </button>
+        <button 
+          className={`${styles.navItem} ${activeTab === 'notes' ? styles.active : ''}`}
+          onClick={() => setActiveTab('notes')}
+        >
+          <StickyNote size={24} />
+          <span>Anotações</span>
         </button>
         <button 
           className={`${styles.navItem} ${activeTab === 'contacts' ? styles.active : ''}`}
@@ -44,13 +58,6 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
         >
           <BookUser size={24} />
           <span>Contatos</span>
-        </button>
-        <button 
-          className={`${styles.navItem} ${activeTab === 'profile' ? styles.active : ''}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          <User size={24} />
-          <span>Perfil</span>
         </button>
       </nav>
     </div>

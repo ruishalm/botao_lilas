@@ -5,6 +5,7 @@ import Profile from './components/Profile/Profile';
 import Health from './components/Health/Health';
 import Contacts from './components/Contacts/Contacts';
 import Tutorial from './components/Tutorial/Tutorial';
+import Notes from './components/Notes/Notes';
 
 function App() {
   const [activeTab, setActiveTab] = useState('calendar');
@@ -26,8 +27,9 @@ function App() {
     <Layout activeTab={activeTab} setActiveTab={setActiveTab} onOpenTutorial={() => setShowTutorial(true)}>
       {activeTab === 'calendar' && <Calendar />}
       {activeTab === 'health' && <Health />}
-      {activeTab === 'contacts' && <Contacts />}
       {activeTab === 'profile' && <Profile />}
+      {activeTab === 'notes' && <Notes />}
+      {activeTab === 'contacts' && <Contacts />}
       
       {showTutorial && <Tutorial onClose={closeTutorial} />}
     </Layout>

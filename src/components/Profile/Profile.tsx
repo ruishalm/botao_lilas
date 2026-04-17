@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './Profile.module.css';
 import Auth from '../Auth/Auth';
 import { auth, db } from '../../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
 
 interface Phone {
@@ -24,6 +24,7 @@ interface ProfileData {
   phones: Phone[];
   cycleLength: string;
   periodLength: string;
+  ubs: string;
 }
 
 const Profile = () => {
@@ -43,7 +44,8 @@ const Profile = () => {
       state: '',
       phones: [{ id: Date.now().toString(), number: '', observation: '' }],
       cycleLength: '28',
-      periodLength: '5'
+      periodLength: '5',
+      ubs: ''
     };
   });
 
@@ -51,8 +53,11 @@ const Profile = () => {
 
   useEffect(() => {
     localStorage.setItem('userProfile', JSON.stringify(data));
-    if (auth.currentUser) {
-      setDoc(doc(db, 'users', auth.currentUser.uid), { profile: data }, { merge: true }).catch(console.error);
+    if (auth.currentUser && data.cpf) {
+      const cleanCpf = data.cpf.replace(/\D/g, '');
+      if (cleanCpf.length === 11) {
+        setDoc(doc(db, 'users', cleanCpf), { uid: auth.currentUser.uid, profile: data }, { merge: true }).catch(console.error);
+      }
     }
   }, [data]);
 
@@ -60,9 +65,10 @@ const Profile = () => {
     const unsubscribe = auth.onAuthStateChanged(async (user: User | null) => {
       if (user) {
         try {
-          const docSnap = await getDoc(doc(db, 'users', user.uid));
-          if (docSnap.exists() && docSnap.data().profile) {
-            setData(docSnap.data().profile);
+          const q = query(collection(db, 'users'), where('uid', '==', user.uid));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            setData(querySnapshot.docs[0].data().profile);
           }
         } catch (error) {
           console.error("Erro ao carregar perfil:", error);
@@ -189,6 +195,15 @@ const Profile = () => {
               <div className={styles.readOnlyValue}>{data.age || 'Não informado'}</div>
             )}
           </div>
+        </div>
+
+        <div className={styles.field}>
+          <label>Sua UBS</label>
+          {isEditing ? (
+            <input type="text" name="ubs" value={data.ubs} onChange={handleChange} placeholder="Nome da sua UBS" />
+          ) : (
+            <div className={styles.readOnlyValue}>{data.ubs || 'Não informado'}</div>
+          )}
         </div>
 
         <div className={styles.addressSection}>

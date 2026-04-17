@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -11,10 +11,7 @@ interface Contact {
 const Contacts = () => {
   const [contacts, setContacts] = useState<Contact[]>(() => {
     const saved = localStorage.getItem('userContacts');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', name: 'Dra. Ana Silva (Ginecologista)', phone: '(11) 98888-7777' },
-      { id: '2', name: 'Posto de Saúde Central', phone: '(11) 3333-2222' }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
   const [isEditing, setIsEditing] = useState(false);
 

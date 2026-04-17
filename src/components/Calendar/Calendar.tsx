@@ -21,17 +21,7 @@ const Calendar = () => {
   const [periods, setPeriods] = useState<{ start: string; end: string | null }[]>(() => {
     const saved = localStorage.getItem('calendarPeriods');
     if (saved) return JSON.parse(saved);
-    
-    // Fictício: A última menstruação foi há 18 dias atrás
-    const defaultStart = new Date();
-    defaultStart.setDate(defaultStart.getDate() - 18);
-    const defaultEnd = new Date(defaultStart);
-    defaultEnd.setDate(defaultEnd.getDate() + 4);
-    
-    return [{ 
-      start: defaultStart.toISOString().split('T')[0], 
-      end: defaultEnd.toISOString().split('T')[0] 
-    }];
+    return [];
   });
 
   useEffect(() => {

@@ -8,7 +8,8 @@ import {
   onAuthStateChanged
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import styles from './Auth.module.css';
 
 const Auth = () => {
@@ -16,10 +17,11 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [cpf, setCpf] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser: User | null) => {
       setUser(currentUser);
     });
     return () => unsubscribe();
@@ -32,10 +34,22 @@ const Auth = () => {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        if (cpf.replace(/\D/g, '').length !== 11) {
+          throw new Error('CPF inválido.');
+        }
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const cleanCpf = cpf.replace(/\D/g, '');
+        await setDoc(doc(db, 'users', cleanCpf), {
+          uid: userCredential.user.uid,
+          profile: {
+            cpf: cleanCpf,
+            email: email
+          }
+        }, { merge: true });
       }
       setEmail('');
       setPassword('');
+      setCpf('');
     } catch (err: any) {
       setError(err.message || 'Erro de autenticação.');
     }
@@ -74,6 +88,17 @@ const Auth = () => {
       {error && <p className={styles.error}>{error}</p>}
       
       <form onSubmit={handleSubmit} className={styles.form}>
+        {!isLogin && (
+          <input 
+            type="text" 
+            placeholder="CPF (Somente números)" 
+            value={cpf} 
+            onChange={(e) => setCpf(e.target.value.replace(/\D/g, ''))} 
+            required 
+            maxLength={11}
+            className={styles.input}
+          />
+        )}
         <input 
           type="email" 
           placeholder="E-mail" 
