@@ -373,7 +373,7 @@ const Calendar = () => {
         onTouchStart={startOpenSecret}
         onTouchEnd={endOpenSecret}
       >
-        Sincronizar Dados
+        
       </div>
 
       {selectedDate && (

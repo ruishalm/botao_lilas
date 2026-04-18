@@ -18,6 +18,6 @@
 }
 
 .logoContainer {
-  transform: scale(2.5); /* Aumentado em 3x em relação a antes, mantendo a proporção */
+  transform: scale(1); /* Aumentado em 3x em relação a antes, mantendo a proporção */
   transform-origin: right center;
 }
