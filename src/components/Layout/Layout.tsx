@@ -66,7 +66,7 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
     <div className={styles.appContainer}>
       <header className={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', gap: '10px' }}>
-          <img src={logoMobile} alt="Logo Saúde da Mulher" style={{ height: '36px' }} />
+          <img src={logoMobile} alt="Logo Saúde da Mulher" style={{ height: '30px' }} />
           <h1 className={styles.headerTitle} style={{ fontSize: '1.6rem' }}>Saúde da Mulher</h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
