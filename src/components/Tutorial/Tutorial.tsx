@@ -40,9 +40,9 @@ const Tutorial = ({ onClose }: TutorialProps) => {
             </p>
             <div className={styles.instructionBox}>
               <ol>
-                <li><strong>Segure</strong> qualquer dia no calendário por <strong>3 segundos</strong>.</li>
+                <li><strong>Segure</strong> qualquer dia no calendário por <strong>1 segundos</strong>.</li>
                 <li>Um <strong>Botão Lilás</strong> enorme aparecerá.</li>
-                <li><strong>Segure</strong> esse botão por mais <strong>3 segundos</strong>.</li>
+                <li><strong>aperte </strong> esse botão <strong>duas vezes</strong>.</li>
               </ol>
             </div>
             <p className={styles.warningText}>

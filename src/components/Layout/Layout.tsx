@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar as CalendarIcon, HeartPulse, BookUser, User, HelpCircle, StickyNote, Download } from 'lucide-react';
 import logoMobile from '../../assets/logo_mobile.png';
-import Footer from '../Footer';
+import Footer from '../Footer/Footer';
 import styles from './Layout.module.css';
 
 // Interface para o evento de instalação do PWA
@@ -34,7 +34,7 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      const promptEvent = e as BeforeInstallPromptEvent;
+      const promptEvent = e as unknown as BeforeInstallPromptEvent;
       setDeferredPrompt(promptEvent);
       window.deferredPWAInstallPrompt = promptEvent;
     };
@@ -67,16 +67,17 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
       <header className={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', gap: '10px' }}>
           <img src={logoMobile} alt="Logo Saúde da Mulher" style={{ height: '36px' }} />
-          <h1 className={styles.headerTitle}>Saúde da Mulher</h1>
+          <h1 className={styles.headerTitle} style={{ fontSize: '1.6rem' }}>Saúde da Mulher</h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button 
             className={styles.helpButton} 
             onClick={handleInstallClick} 
             title="Baixar App"
-            style={{ position: 'relative', right: '0' }}
+            style={{ position: 'relative', right: '0', display: 'flex', gap: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}
           >
             <Download size={20} />
+            <span>Baixar App</span>
           </button>
           <button 
             className={styles.helpButton} 
@@ -133,8 +134,8 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
             <span>Contatos</span>
           </button>
         </nav>
-        <Footer />
       </div>
+      <Footer />
     </div>
     
   );

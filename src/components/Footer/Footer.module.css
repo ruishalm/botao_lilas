@@ -1,0 +1,23 @@
+.footerContainer {
+  width: 100%;
+  padding: 8px 15px 15px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0.7;
+  box-sizing: border-box;
+  background-color: transparent;
+}
+
+.footerText {
+  margin: 0;
+  font-size: 11px;
+  color: #db2777;
+  flex: 1;
+  text-align: left;
+}
+
+.logoContainer {
+  transform: scale(2.5); /* Aumentado em 3x em relação a antes, mantendo a proporção */
+  transform-origin: right center;
+}

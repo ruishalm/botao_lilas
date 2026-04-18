@@ -250,8 +250,8 @@
 
 .disguisedBox {
   width: 90%;     
-  height: 150px;
-  margin: 0 auto;
+  height: 48px;
+  margin: 10px auto 20px auto;
   border-radius: 8px;
   background-color: #fdf4ff;
   border: 1px solid #fbcfe8;
@@ -259,4 +259,10 @@
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #db2777;
+  font-weight: 500;
+  font-size: 0.9rem;
 }
