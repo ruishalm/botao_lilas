@@ -1,13 +1,26 @@
-//import React from 'react';
+import React from 'react';
 import Logo from './Logo';
 
-export default function Footer() {
+const Footer = () => {
   return (
-    <footer style={{ fontSize: '10px', textAlign: 'center', padding: '20px 0', marginTop: 'auto' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-        <span>Desenvolvido por</span>
+    <footer style={{
+      width: '100%',
+      padding: '5px 15px 15px 15px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: 'auto',
+      opacity: 0.7,
+      boxSizing: 'border-box'
+    }}>
+      <p style={{ margin: 0, fontSize: '11px', color: '#db2777', flex: 1, textAlign: 'left' }}>
+        © {new Date().getFullYear()} Botão Lilás
+      </p>
+      <div style={{ transform: 'scale(1)', transformOrigin: 'right center' }}>
         <Logo size="small" />
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

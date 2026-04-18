@@ -1,0 +1,36 @@
+{
+  "short_name": "Botão Lilás",
+  "name": "Botão Lilás - Proteção à Mulher",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo_mobile.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#fdf4ff",
+  "display": "standalone",
+  "theme_color": "#a21caf",
+  "description": "Aplicativo de saúde e proteção para mulheres.",
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "sizes": "430x932",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshot2.png",
+      "sizes": "430x932",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}
