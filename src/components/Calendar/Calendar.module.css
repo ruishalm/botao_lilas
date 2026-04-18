@@ -247,3 +247,16 @@
   transform: scale(0.95);
   box-shadow: 0 0 30px rgba(168, 85, 247, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5);
 }
+
+.disguisedBox {
+  width: 90%;     
+  height: 150px;
+  margin: 0 auto;
+  border-radius: 8px;
+  background-color: #fdf4ff;
+  border: 1px solid #fbcfe8;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

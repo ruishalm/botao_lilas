@@ -12,6 +12,20 @@ const Calendar = () => {
   const [noteText, setNoteText] = useState('');
   const [showSecretButton, setShowSecretButton] = useState(false);
   const secretTimer = useRef<number | null>(null);
+  const openSecretTimer = useRef<number | null>(null);
+
+  const startOpenSecret = () => {
+    openSecretTimer.current = window.setTimeout(() => {
+      handleSecretPress();
+    }, 1500);
+  };
+
+  const endOpenSecret = () => {
+    if (openSecretTimer.current) {
+      clearTimeout(openSecretTimer.current);
+      openSecretTimer.current = null;
+    }
+  };
   
   const [notes, setNotes] = useState<Record<string, string>>(() => {
     const savedNotes = localStorage.getItem('calendarNotes');
@@ -42,7 +56,7 @@ const Calendar = () => {
   }, [periods]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user: any) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user: import('firebase/auth').User | null) => {
       if (user) {
         try {
           const docSnap = await getDoc(doc(db, 'users', user.uid));
@@ -66,7 +80,9 @@ const Calendar = () => {
     try {
       const profile = JSON.parse(savedProfile);
       if (profile.cycleLength) userCycleLength = parseInt(profile.cycleLength, 10) || 28;
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   let cycleLength = userCycleLength;
@@ -152,7 +168,7 @@ const Calendar = () => {
                           `\nNome: ${profile.name || 'Não informado'}` +
                           `\nIdade: ${profile.age || 'Não informada'}` +
                           `\nEndereço: ${profile.street || 'Rua não informada'}, ${profile.number || 'S/N'} - ${profile.neighborhood || 'Bairro não informado'}, ${profile.city || 'Cidade não informada'}/${profile.state || 'UF'}` +
-                          `\nContatos: ${profile.phones?.filter((p: any) => p.number).map((p: any) => `${p.number} (${p.observation || 'Sem obs'})`).join(', ') || 'Nenhum registrado'}`;
+                          `\nContatos: ${profile.phones?.filter((p: {number: string, name: string, observation: string}) => p.number).map((p: {number: string, name: string, observation: string}) => `${p.number} (${p.observation || 'Sem obs'})`).join(', ') || 'Nenhum registrado'}`;
           } catch (e) {
             console.error("Erro ao ler perfil", e);
           }
@@ -195,13 +211,6 @@ const Calendar = () => {
     }, 3000);
   };
 
-  const endSecretAlert = () => {
-    if (secretTimer.current) {
-      clearTimeout(secretTimer.current);
-      secretTimer.current = null;
-    }
-  };
-
   const handleDayClick = (date: Date) => {
     setSelectedDate(date);
     const dateString = date.toISOString().split('T')[0];
@@ -241,13 +250,17 @@ const Calendar = () => {
         setPeriods(updated);
       }
     } else {
-      if (lastP && lastP.end === dateStr) {
-        // Se clicou no dia que fechou, reabre (desfaz o fechamento)
+      if (lastP && lastP.start === dateStr && lastP.end === dateStr) {
+        // Se começou e terminou no mesmo dia, deleta
+        const updated = sortedPeriods.slice(0, -1);
+        setPeriods(updated);
+      } else if (lastP && lastP.end === dateStr) {
+        // Se clicou no dia que fechou (e não abriu no mesmo dia), reabre (desfaz o fechamento)
         const updated = [...sortedPeriods];
         updated[updated.length - 1].end = null;
         setPeriods(updated);
-      } else if (lastP && lastP.start === dateStr && lastP.end === dateStr) {
-        // Se começou e terminou no mesmo dia, deleta
+      } else if (lastP && lastP.start === dateStr) {
+        // Se começou e apenas começou no mesmo dia, desfaz
         const updated = sortedPeriods.slice(0, -1);
         setPeriods(updated);
       } else {
@@ -285,16 +298,24 @@ const Calendar = () => {
         modalButtonIcon = <DropletOff size={18} />;
       }
     } else {
-      if (lastP && lastP.end === dateStr) {
-        modalButtonText = "DESFAZER FIM";
-        modalButtonBg = "#fee2e2";
-        modalButtonColor = "#ef4444";
-        modalButtonIcon = <Droplet size={18} fill="#ef4444" />;
-      } else if (lastP && lastP.start === dateStr && lastP.end === dateStr) {
+      const isStartDay = lastP && lastP.start === dateStr;
+      const isEndDay = lastP && lastP.end === dateStr;
+
+      if (isStartDay && isEndDay) {
         modalButtonText = "DESFAZER MARCAÇÃO";
         modalButtonBg = "#fee2e2";
         modalButtonColor = "#ef4444";
         modalButtonIcon = <Droplet size={18} fill="#ef4444" />;
+      } else if (isEndDay) {
+        modalButtonText = "DESFAZER FIM";
+        modalButtonBg = "#fee2e2";
+        modalButtonColor = "#ef4444";
+        modalButtonIcon = <Droplet size={18} fill="#ef4444" />;
+      } else if (isStartDay) {
+        modalButtonText = "DESFAZER INÍCIO";
+        modalButtonBg = "#fce7f3";
+        modalButtonColor = "#db2777";
+        modalButtonIcon = <DropletOff size={18} />;
       } else {
         modalButtonText = "DESCEU AQUI!";
         modalButtonBg = "#fee2e2";
@@ -344,6 +365,16 @@ const Calendar = () => {
         </div>
       </div>
 
+      <div 
+        className={styles.disguisedBox}
+        onMouseDown={startOpenSecret}
+        onMouseUp={endOpenSecret}
+        onMouseLeave={endOpenSecret}
+        onTouchStart={startOpenSecret}
+        onTouchEnd={endOpenSecret}
+      >
+      </div>
+
       {selectedDate && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
@@ -378,13 +409,10 @@ const Calendar = () => {
         <div className={styles.secretOverlay} onClick={() => setShowSecretButton(false)}>
           <button 
             className={styles.hugeSecretButton}
-            onMouseDown={startSecretAlert}
-            onMouseUp={endSecretAlert}
-            onMouseLeave={endSecretAlert}
-            onTouchStart={startSecretAlert}
-            onTouchEnd={endSecretAlert}
+            onDoubleClick={startSecretAlert}
             onClick={(e) => e.stopPropagation()}
           >
+            2 cliques
           </button>
         </div>
       )}

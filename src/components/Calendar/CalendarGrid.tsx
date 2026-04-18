@@ -47,7 +47,7 @@ const CalendarGrid = ({ currentDate, onSecretPress, onDayClick, periods, cycleLe
     let isPeriodDay = false;
     for (const p of periods) {
       const pStart = new Date(p.start + 'T00:00:00');
-      let pEnd = p.end ? new Date(p.end + 'T00:00:00') : new Date(); // Se não tem fim, vai até hoje
+      const pEnd = p.end ? new Date(p.end + 'T00:00:00') : new Date(); // Se não tem fim, vai até hoje
       
       // Ajustar para não contar o futuro se for aberto
       if (date >= pStart && date <= pEnd) {

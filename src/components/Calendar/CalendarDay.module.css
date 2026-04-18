@@ -24,8 +24,12 @@
 }
 
 .today {
-  font-weight: bold;
-  border: 2px solid #d946ef;
+  font-weight: 900;
+  border: 3px solid #d946ef;
+  transform: scale(1.8);
+  z-index: 10;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
 }
 
 .periodDay {

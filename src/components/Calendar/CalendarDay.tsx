@@ -23,9 +23,8 @@ const CalendarDay = ({ day, date, isToday, isPeriodDay, isPredictedDay, isTpmDay
     pressTimer.current = window.setTimeout(() => {
       isLongPress.current = true;
       onSecretPress();
-    }, 3000); 
+    }, 1500);
   };
-
   const endPress = () => {
     if (pressTimer.current) {
       clearTimeout(pressTimer.current);
