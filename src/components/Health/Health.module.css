@@ -1,0 +1,106 @@
+.container {
+  padding: 20px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.title {
+  color: #a21caf;
+  margin-top: 0;
+}
+
+.section {
+  margin-bottom: 25px;
+  padding: 15px;
+  border: 1px solid #fbcfe8;
+  border-radius: 8px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #a21caf;
+  font-size: 1.1rem;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  color: #db2777;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dataContainer {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.dataItem {
+  flex: 1;
+  min-width: 80px;
+}
+
+.label {
+  display: block;
+  color: #666;
+  font-size: 0.8rem;
+  margin-bottom: 5px;
+}
+
+.inputField {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.valueText {
+  font-weight: bold;
+  color: #333;
+}
+
+.cyclesContainer {
+  margin-top: 20px;
+}
+
+.cyclesTitle {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.cyclesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emptyItem {
+  padding: 10px;
+  background-color: #fdf4ff;
+  border-radius: 8px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.symptomsContainer {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #fdf4ff;
+  border-radius: 8px;
+}
+
+.symptomsText {
+  color: #555;
+  margin: 5px 0 0 0;
+  font-size: 0.9rem;
+}

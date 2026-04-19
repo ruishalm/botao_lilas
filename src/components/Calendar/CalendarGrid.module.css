@@ -1,0 +1,27 @@
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.weekDay {
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.emptyDay {
+  padding: 10px;
+}

@@ -1,5 +1,5 @@
 import CalendarDay from './CalendarDay';
-import styles from './Calendar.module.css';
+import styles from './CalendarGrid.module.css';
 
 interface Period {
   start: string;

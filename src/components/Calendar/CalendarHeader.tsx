@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react';
-import styles from './Calendar.module.css';
+import styles from './CalendarHeader.module.css';
 
 interface CalendarHeaderProps {
   currentDate: Date;

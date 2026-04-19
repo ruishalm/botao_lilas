@@ -45,54 +45,6 @@
 }
 
 /* Resto dos estilos se mantêm... */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.monthTitle {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0;
-  color: #a21caf;
-}
-
-.navButton {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  color: #888;
-  cursor: pointer;
-  padding: 5px 10px;
-}
-
-.gridContainer {
-  display: flex;
-  flex-direction: column;
-}
-
-.weekDays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #999;
-  margin-bottom: 10px;
-}
-
-.daysGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-}
-
-.emptyDay {
-  padding: 10px;
-}
-
 .legend {
   display: flex;
   justify-content: center;

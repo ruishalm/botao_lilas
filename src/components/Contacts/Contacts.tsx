@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { auth, db } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import styles from './Contacts.module.css';
 
 interface Contact {
   id: string;
@@ -51,41 +52,41 @@ const Contacts = () => {
   };
 
   return (
-    <div style={{ padding: '20px', backgroundColor: 'white', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-        <h2 style={{ color: '#a21caf', margin: 0 }}>Meus Contatos Médicos</h2>
-        <button onClick={() => setIsEditing(!isEditing)} style={{ background: 'none', border: 'none', color: '#db2777', fontWeight: 'bold', cursor: 'pointer' }}>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Meus Contatos Médicos</h2>
+        <button onClick={() => setIsEditing(!isEditing)} className={styles.editButton}>
           {isEditing ? 'Salvar' : 'Editar'}
         </button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <div className={styles.list}>
         {contacts.map((contact) => (
-          <div key={contact.id} style={{ borderBottom: '1px solid #eee', paddingBottom: '15px' }}>
+          <div key={contact.id} className={styles.contactItem}>
             {isEditing ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className={styles.editForm}>
                 <input 
                   type="text" 
                   value={contact.name} 
                   onChange={(e) => handleContactChange(contact.id, 'name', e.target.value)} 
                   placeholder="Nome do contato/local"
-                  style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                  className={styles.input}
                 />
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div className={styles.inputRow}>
                   <input 
                     type="text" 
                     value={contact.phone} 
                     onChange={(e) => handleContactChange(contact.id, 'phone', e.target.value)} 
                     placeholder="Telefone"
-                    style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', flex: 1 }}
+                    className={`${styles.input} ${styles.inputFlex}`}
                   />
-                  <button onClick={() => removeContact(contact.id)} style={{ padding: '8px', borderRadius: '4px', border: 'none', backgroundColor: '#fee2e2', color: '#ef4444', cursor: 'pointer' }}>Remover</button>
+                  <button onClick={() => removeContact(contact.id)} className={styles.removeButton}>Remover</button>
                 </div>
               </div>
             ) : (
               <>
-                <strong>{contact.name || 'Sem nome'}</strong>
-                <p style={{ margin: '5px 0', color: '#666' }}>{contact.phone || 'Sem telefone'}</p>
+                <strong className={styles.contactName}>{contact.name || 'Sem nome'}</strong>
+                <p className={styles.contactPhone}>{contact.phone || 'Sem telefone'}</p>
               </>
             )}
           </div>
@@ -93,7 +94,7 @@ const Contacts = () => {
       </div>
 
       {isEditing && (
-        <button onClick={addContact} style={{ marginTop: '15px', width: '100%', padding: '10px', borderRadius: '8px', border: '1px dashed #db2777', backgroundColor: '#fdf4ff', color: '#db2777', cursor: 'pointer', fontWeight: 'bold' }}>
+        <button onClick={addContact} className={styles.addButton}>
           + Adicionar Contato
         </button>
       )}

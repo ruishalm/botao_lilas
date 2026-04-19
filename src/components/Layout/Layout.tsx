@@ -19,6 +19,9 @@ declare global {
   interface Window {
     deferredPWAInstallPrompt: BeforeInstallPromptEvent | null;
   }
+  interface Navigator {
+    standalone?: boolean;
+  }
 }
 
 interface LayoutProps {
@@ -30,8 +33,20 @@ interface LayoutProps {
 
 const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutProps) => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isInstalled, setIsInstalled] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+    return false;
+  });
 
   useEffect(() => {
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       const promptEvent = e as unknown as BeforeInstallPromptEvent;
@@ -42,6 +57,7 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     return () => {
+      window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
@@ -70,15 +86,17 @@ const Layout = ({ children, activeTab, setActiveTab, onOpenTutorial }: LayoutPro
           <h1 className={styles.headerTitle} style={{ fontSize: '1.6rem' }}>Saúde da Mulher</h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button 
-            className={styles.helpButton} 
-            onClick={handleInstallClick} 
-            title="Baixar App"
-            style={{ position: 'relative', right: '0', display: 'flex', gap: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}
-          >
-            <Download size={20} />
-            <span>Baixar App</span>
-          </button>
+          {!isInstalled && (
+            <button 
+              className={styles.helpButton} 
+              onClick={handleInstallClick} 
+              title="Baixar App"
+              style={{ position: 'relative', right: '0', display: 'flex', gap: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}
+            >
+              <Download size={20} />
+              <span>Baixar App</span>
+            </button>
+          )}
           <button 
             className={styles.helpButton} 
             onClick={onOpenTutorial} 
